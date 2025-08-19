@@ -4,7 +4,7 @@ pub async fn log_ticks_and_collect(
     client: &ibapi::client::Client,
     symbol: &'static str,
     min_ticks_to_collect:usize
-) -> Result<Vec<TickTypes>, Box<dyn std::error::Error>> {
+) -> Result<(Vec<TickTypes>, ibapi::subscriptions::Subscription<TickTypes>), Box<dyn std::error::Error>> {
     let contract = Contract::stock(symbol);
     tracing::info!("subscribing to market data for {}", contract.symbol);
 
@@ -28,5 +28,5 @@ pub async fn log_ticks_and_collect(
     }
 
     tracing::info!("market data collection complete for symbol {}; collected {} ticks", symbol, tick_count);
-    Ok(ticks)
+    Ok((ticks, market_data))
 }

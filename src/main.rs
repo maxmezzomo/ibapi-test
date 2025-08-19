@@ -31,9 +31,15 @@ async fn main() {
         .collect::<Vec<_>>();
 
     let collect_and_display_results = async {
+        // let mut subs: Vec<ibapi::subscriptions::Subscription<_>>=Vec::default();
         tracing::info!("starting futures join");
         let results = futures::future::join_all(futures).await;
-        tracing::info!("futures join finishes with results: {:?}", results);
+        let ticks = results
+            .into_iter()
+            .map(|res| res.map(|(ticks, ..)| ticks))
+            .collect::<Vec<_>>();
+
+        tracing::info!("futures join finishes with ticks: {:#?}", ticks);
     };
 
     let test_timeout = tokio::time::sleep(std::time::Duration::from_millis(TEST_TIMEOUT_MS));
