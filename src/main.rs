@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use tracing_subscriber::EnvFilter;
 
 mod market_data;
@@ -15,9 +17,9 @@ async fn main() {
         .with_target(true)
         .init();
 
-    let client = ibapi::client::Client::connect(IB_ADDRESS, 100)
+    let client = Arc::new(ibapi::client::Client::connect(IB_ADDRESS, 100)
         .await
-        .expect("connect should work for example");
+        .expect("connect should work for example"));
 
     // I use delayed since paper account
     client
@@ -27,7 +29,7 @@ async fn main() {
 
     let futures = SYMBOLS
         .into_iter()
-        .map(async |symbol| market_data::log_ticks_and_collect(&client, symbol, TICK_COUNT).await)
+        .map(async |symbol| market_data::log_ticks_and_collect(Arc::clone(&client), symbol, TICK_COUNT).await)
         .collect::<Vec<_>>();
 
     let collect_and_display_results = async {

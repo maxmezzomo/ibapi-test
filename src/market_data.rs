@@ -1,7 +1,9 @@
+use std::sync::Arc;
+
 use ibapi::{contracts::Contract, market_data::realtime::TickTypes};
 
 pub async fn log_ticks_and_collect(
-    client: &ibapi::client::Client,
+    client: Arc<ibapi::client::Client>,
     symbol: &'static str,
     min_ticks_to_collect:usize
 ) -> Result<Vec<TickTypes>, Box<dyn std::error::Error>> {
