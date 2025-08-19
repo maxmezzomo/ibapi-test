@@ -1,0 +1,11 @@
+[package]
+name = "ibapi-test"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+futures = "0.3.31"
+ibapi = { git = "https://github.com/wboayue/rust-ibapi", branch = "main", features = ["async"] }
+tokio = { version = "1.47.1", features = ["full"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter", "fmt"] }
