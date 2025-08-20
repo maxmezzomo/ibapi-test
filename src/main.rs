@@ -1,5 +1,6 @@
 use tracing_subscriber::EnvFilter;
 
+mod core;
 mod market_data;
 
 const IB_ADDRESS: &str = "127.0.0.1:7496";
@@ -31,14 +32,13 @@ async fn main() {
         .collect::<Vec<_>>();
 
     let collect_and_display_results = async {
-        // let mut subs: Vec<ibapi::subscriptions::Subscription<_>>=Vec::default();
         tracing::info!("starting futures join");
         let results = futures::future::join_all(futures).await;
         let ticks = results
             .into_iter()
-            .map(|res| res.map(|(ticks, ..)| ticks))
+            .map(|res| res.map(|guarded_result| guarded_result.to_result()))
             .collect::<Vec<_>>();
-
+        
         tracing::info!("futures join finishes with ticks: {:#?}", ticks);
     };
 
